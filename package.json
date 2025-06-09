@@ -1,0 +1,27 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/AnastasiaVAV/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AnastasiaVAV/frontend-project-11/actions)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnastasiaVAV/frontend-project-11.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnastasiaVAV/frontend-project-11/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/AnastasiaVAV/frontend-project-11#readme",
+  "devDependencies": {
+    "@eslint/create-config": "^1.9.0",
+    "@eslint/js": "^9.28.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0"
+  }
+}

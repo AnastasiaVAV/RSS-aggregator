@@ -1,0 +1,4 @@
+/node_modules/
+/asciinema_casts/
+/.vscode/
+/coverage/
