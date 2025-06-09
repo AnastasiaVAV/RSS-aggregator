@@ -1,2 +1,3 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/AnastasiaVAV/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AnastasiaVAV/frontend-project-11/actions)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AnastasiaVAV_frontend-project-11)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)

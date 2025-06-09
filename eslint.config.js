@@ -12,7 +12,10 @@ export default defineConfig([
       '@stylistic': stylistic,
     },
     languageOptions: {
-      globals: globals.node,
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
