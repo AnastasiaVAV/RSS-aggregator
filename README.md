@@ -1,3 +1,6 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/AnastasiaVAV/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AnastasiaVAV/frontend-project-11/actions)
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AnastasiaVAV_frontend-project-11)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)
+<!-- [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AnastasiaVAV_frontend-project-11)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11) -->
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=AnastasiaVAV_frontend-project-11&metric=bugs)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=AnastasiaVAV_frontend-project-11&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=AnastasiaVAV_frontend-project-11&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)
