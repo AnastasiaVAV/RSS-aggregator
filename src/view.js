@@ -15,7 +15,6 @@ const renderForm = (state, elements, i18n) => {
     case 'success':
       elements.submit.disabled = !rssForm.valid
       elements.feedbackMessage.textContent = i18n.t('form.success')
-      elements.feedbackMessage
       elements.form.reset()
       elements.input.focus()
       break
