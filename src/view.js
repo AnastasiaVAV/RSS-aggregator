@@ -1,43 +1,45 @@
-import { snapshot } from 'valtio/vanilla'
 import onChange from 'on-change'
 
 const renderForm = (state, elements, i18n) => {
-  const { rssForm } = snapshot(state)
+  const { rssForm, uiState } = state
+  elements.form.feedbackMessage.classList.remove('text-danger', 'text-success')
   switch (rssForm.status) {
     case 'filling':
-      elements.submit.disabled = !rssForm.valid
-      elements.feedbackMessage.textContent = ''
+      elements.form.submit.disabled = false
       break
     case 'sending':
-      elements.submit.disabled = rssForm.valid
-      elements.feedbackMessage.textContent = ''
+      elements.form.submit.disabled = rssForm.valid
+      elements.form.feedbackMessage.textContent = ''
       break
     case 'success':
-      elements.submit.disabled = !rssForm.valid
-      elements.feedbackMessage.textContent = i18n.t('form.success')
-      elements.form.reset()
-      elements.input.focus()
+      elements.form.submit.disabled = false
+      elements.form.feedbackMessage.classList.add(`text-${uiState.formFeedbackMessage}`)
+      elements.form.feedbackMessage.textContent = i18n.t('form.feedbackMessage.success')
+      elements.form.form.reset()
+      elements.form.input.focus()
       break
     case 'failed':
-      elements.submit.disabled = !rssForm.valid
-      elements.feedbackMessage.textContent = state.rssForm.error
-      elements.input.focus()
+      console.log(rssForm.status)
+      console.log(uiState.formFeedbackMessage)
+      elements.form.submit.disabled = false
+      elements.form.feedbackMessage.classList.add(`text-${uiState.formFeedbackMessage}`)
+      elements.form.feedbackMessage.textContent = i18n.t(state.rssForm.error)
+      elements.form.input.focus()
       break
     default:
       return
   }
 }
 
-export default (state, elements, i18n) => onChange(state, (path, value) => {
+export default (state, elements, i18n) => onChange(state, (path) => {
   switch (path) {
     case 'rssForm.status':
-      console.log(value)
       renderForm(state, elements, i18n)
       break
     case 'rssForm.error':
       break
     case 'rssForm.valid':
-      renderForm(state, elements, i18n)
+      // renderForm(state, elements, i18n)
       break
     default:
       return

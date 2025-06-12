@@ -1,15 +1,19 @@
 export default {
   translation: {
-    project: {
-      title: 'RSS агрегатор',
-    },
+    title: 'RSS агрегатор',
+    titleDescription: 'Начните читать RSS сегодня! Это легко, это красиво.',
     form: {
-      success: 'RSS успешно загружен',
-      errors: {
-        notUniqueUrl: 'RSS уже существует',
-        notValidUrl: 'Ссылка должна быть валидным URL',
-        notValidRss: 'Ресурс не содержит валидный RSS',
-        networkProblems: 'Ошибка сети',
+      input: 'Ссылка RSS',
+      submitButton: 'Добавить',
+      exampleRss: 'Пример: https://lorem-rss.hexlet.app/feed',
+      feedbackMessage: {
+        success: 'RSS успешно загружен',
+        errors: {
+          notUniqueUrl: 'RSS уже существует',
+          notValidUrl: 'Ссылка должна быть валидным URL',
+          notValidRss: 'Ресурс не содержит валидный RSS',
+          networkProblems: 'Ошибка сети',
+        },
       },
     },
   },
