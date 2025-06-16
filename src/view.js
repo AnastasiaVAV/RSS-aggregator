@@ -19,8 +19,6 @@ const renderForm = (state, elements, i18n) => {
       elements.form.input.focus()
       break
     case 'failed':
-      console.log(rssForm.status)
-      console.log(uiState.formFeedbackMessage)
       elements.form.submit.disabled = false
       elements.form.feedbackMessage.classList.add(`text-${uiState.formFeedbackMessage}`)
       elements.form.feedbackMessage.textContent = i18n.t(state.rssForm.error)
@@ -31,6 +29,72 @@ const renderForm = (state, elements, i18n) => {
   }
 }
 
+const renderSection = (sectionType, i18n) => {
+  const container = document.createElement('div')
+  container.classList.add('card', 'border-0')
+
+  const sectionNameContainer = document.createElement('div') // контейнер названия секции
+  sectionNameContainer.classList.add('card-body')
+
+  const sectionName = document.createElement('h2') // название секции
+  sectionName.classList.add('card-title', 'h4')
+  sectionName.textContent = i18n.t(`${sectionType}`)
+
+  const list = document.createElement('ul')
+  list.classList.add('list-group', 'border-0', 'rounded-0')
+
+  sectionNameContainer.append(sectionName)
+  container.append(sectionNameContainer)
+
+  return { container, list }
+}
+
+const renderFeeds = (state, elements, i18n) => {
+  elements.feeds.innerHTML = ''
+  const { container, list } = renderSection('feeds', i18n)
+  const feeds = state.feeds
+
+  feeds.forEach(({ title, description }) => {
+    const item = document.createElement('li')
+    item.classList.add('list-group-item', 'border-0', 'border-end-0')
+
+    const feedTitle = document.createElement('h3')
+    feedTitle.classList.add('h6', 'm-0')
+    feedTitle.textContent = title
+
+    const feedDescription = document.createElement('p')
+    feedDescription.classList.add('m-0', 'small', 'text-black-50')
+    feedDescription.textContent = description
+    item.append(feedTitle, feedDescription)
+    list.append(item)
+  })
+  container.append(list)
+  elements.feeds.append(container)
+}
+
+const renderPosts = (state, elements, i18n) => {
+  elements.posts.innerHTML = ''
+  const { container, list } = renderSection('posts', i18n)
+  const posts = state.posts
+  console.log(posts)
+
+  posts.forEach(({ title, description, link }) => {
+    const item = document.createElement('li')
+    item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
+    const linkEl = document.createElement('a')
+    linkEl.classList.add('fw-bold')
+    linkEl.href = link
+    linkEl.target = '_blank'
+    linkEl.rel = 'noopener noreferrer'
+    linkEl.textContent = title
+
+    item.append(linkEl)
+    list.append(item)
+  })
+  container.append(list)
+  elements.posts.append(container)
+}
+
 export default (state, elements, i18n) => onChange(state, (path) => {
   switch (path) {
     case 'rssForm.status':
@@ -38,8 +102,11 @@ export default (state, elements, i18n) => onChange(state, (path) => {
       break
     case 'rssForm.error':
       break
-    case 'rssForm.valid':
-      // renderForm(state, elements, i18n)
+    case 'feeds':
+      renderFeeds(state, elements, i18n)
+      break
+    case 'posts':
+      renderPosts(state, elements, i18n)
       break
     default:
       return

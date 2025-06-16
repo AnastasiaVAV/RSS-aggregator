@@ -1,7 +1,10 @@
 // import * as yup from 'yup'
 import { setLocale } from 'yup'
 import i18n from 'i18next'
+// import axios from 'axios'
 import validator from './utils/validator.js'
+import parser from './utils/parser.js'
+import rssFetch from './utils/fetch.js'
 import ru from './locales/ru.js'
 import render from './view.js'
 
@@ -16,13 +19,15 @@ const elements = {
     exampleRss: document.querySelector('.text-muted'),
     feedbackMessage: document.querySelector('.feedback'),
   },
+  posts: document.querySelector('.posts'),
+  feeds: document.querySelector('.feeds'),
 }
 
 const isValid = (url, feeds) => {
   return validator(feeds).validate(url)
     .then(() => true)
     .catch((err) => {
-      console.log(err.errors[0])
+      // console.log(err.errors[0])
       return Promise.reject(err.errors[0])
     })
 }
@@ -60,7 +65,8 @@ export default () => {
       error: null,
       valid: true,
     },
-    feeds: [],
+    feeds: [], // { url: 'http...', title, description, id: 1 }
+    posts: [],
     uiState: {
       formFeedbackMessage: '', // text-danger, text-success
     },
@@ -71,22 +77,29 @@ export default () => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const url = formData.get('url').trim()
+    const lastIdCount = state.feeds[state.feeds.length - 1]?.id || 0
+    const currentIdCount = lastIdCount + 1
     state.rssForm.status = 'sending'
     isValid(url, state.feeds)
       .then(() => {
-        watchedState.feeds.push(url)
-        watchedState.rssForm.valid = true
-        watchedState.rssForm.error = null
-        watchedState.uiState.formFeedbackMessage = 'success'
-        watchedState.rssForm.status = 'success'
-        // console.log(state.uiState.formFeedbackMessage)
+        state.rssForm.valid = true
+        state.rssForm.error = null
+        return rssFetch(url)
       })
-      .catch((error) => {
-        watchedState.rssForm.valid = false
-        watchedState.rssForm.error = error
-        watchedState.uiState.formFeedbackMessage = 'danger'
+      .then(({ data }) => {
+        const [feed, posts] = parser(data.contents)
+        const newFeed = { url, ...feed, id: currentIdCount }
+        const postsForFeed = posts.map(post => ({ ...post, feedId: currentIdCount }))
+        state.uiState.formFeedbackMessage = 'success'
+        watchedState.rssForm.status = 'success'
+        watchedState.feeds.push(newFeed)
+        watchedState.posts = ([...postsForFeed, ...state.posts])
+      })
+      .catch((err) => {
+        state.rssForm.valid = false
+        state.rssForm.error = err
+        state.uiState.formFeedbackMessage = 'danger'
         watchedState.rssForm.status = 'failed'
-        // console.log(state.uiState.formFeedbackMessage)
       })
   })
 }
