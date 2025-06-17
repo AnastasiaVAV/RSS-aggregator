@@ -2,10 +2,12 @@
 import { setLocale } from 'yup'
 import i18n from 'i18next'
 // import axios from 'axios'
+import ru from './locales/ru.js'
 import validator from './utils/validator.js'
 import parser from './utils/parser.js'
+import update from './utils/update.js'
 import rssFetch from './utils/fetch.js'
-import ru from './locales/ru.js'
+
 import render from './view.js'
 
 const elements = {
@@ -66,7 +68,7 @@ export default () => {
       valid: true,
     },
     feeds: [], // { url: 'http...', title, description, id: 1 }
-    posts: [],
+    posts: [], // {  title, description, link, feedId}; { feedId, posts: [{ title, description, link }] }
     uiState: {
       formFeedbackMessage: '', // text-danger, text-success
     },
@@ -87,15 +89,18 @@ export default () => {
         return rssFetch(url)
       })
       .then(({ data }) => {
-        const [feed, postsArr] = parser(data.contents)
+        const [feed, posts] = parser(data.contents)
         const newFeed = { url, ...feed, id: currentIdCount }
-        const postsForFeed = { feedId: currentIdCount, posts: postsArr }
-        // const postsForFeed = posts.map(post => ({ ...post, feedId: currentIdCount }))
+        // const postsForFeed = { feedId: currentIdCount, posts: postsArr }
+        const postsForFeed = posts.map(post => ({ ...post, feedId: currentIdCount }))
         state.uiState.formFeedbackMessage = 'success'
         watchedState.rssForm.status = 'success'
         watchedState.feeds = [newFeed, ...state.feeds]
-        watchedState.posts = ([postsForFeed, ...state.posts])
-        console.log(state.posts)
+        watchedState.posts = ([...postsForFeed, ...state.posts])
+        // console.log(state.posts)
+      })
+      .then(() => {
+        return setInterval(() => update(watchedState), 5000)
       })
       .catch((err) => {
         state.rssForm.valid = false
