@@ -78,18 +78,20 @@ const renderPosts = (state, elements, i18n) => {
   const posts = state.posts
   console.log(posts)
 
-  posts.forEach(({ title, description, link }) => {
-    const item = document.createElement('li')
-    item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
-    const linkEl = document.createElement('a')
-    linkEl.classList.add('fw-bold')
-    linkEl.href = link
-    linkEl.target = '_blank'
-    linkEl.rel = 'noopener noreferrer'
-    linkEl.textContent = title
+  posts.forEach(({ feedId, posts }) => { // ({ title, description, link })
+    posts.forEach(({ title, description, link }) => {
+      const item = document.createElement('li')
+      item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
+      const linkEl = document.createElement('a')
+      linkEl.classList.add('fw-bold')
+      linkEl.href = link
+      linkEl.target = '_blank'
+      linkEl.rel = 'noopener noreferrer'
+      linkEl.textContent = title
 
-    item.append(linkEl)
-    list.append(item)
+      item.append(linkEl)
+      list.append(item)
+    })
   })
   container.append(list)
   elements.posts.append(container)

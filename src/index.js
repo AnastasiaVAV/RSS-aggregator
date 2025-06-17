@@ -87,13 +87,15 @@ export default () => {
         return rssFetch(url)
       })
       .then(({ data }) => {
-        const [feed, posts] = parser(data.contents)
+        const [feed, postsArr] = parser(data.contents)
         const newFeed = { url, ...feed, id: currentIdCount }
-        const postsForFeed = posts.map(post => ({ ...post, feedId: currentIdCount }))
+        const postsForFeed = { feedId: currentIdCount, posts: postsArr }
+        // const postsForFeed = posts.map(post => ({ ...post, feedId: currentIdCount }))
         state.uiState.formFeedbackMessage = 'success'
         watchedState.rssForm.status = 'success'
-        watchedState.feeds.push(newFeed)
-        watchedState.posts = ([...postsForFeed, ...state.posts])
+        watchedState.feeds = [newFeed, ...state.feeds]
+        watchedState.posts = ([postsForFeed, ...state.posts])
+        console.log(state.posts)
       })
       .catch((err) => {
         state.rssForm.valid = false
