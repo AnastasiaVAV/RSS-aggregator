@@ -16,7 +16,16 @@ export default {
         },
       },
     },
-    feeds: 'Фиды',
-    posts: 'Посты',
+    feeds: {
+      sectionTitle: 'Фиды',
+    },
+    posts: {
+      sectionTitle: 'Посты',
+      openModal: 'Просмотр',
+    },
+    modal: {
+      readMore: 'Читать полностью',
+      close: 'Закрыть',
+    },
   },
 }

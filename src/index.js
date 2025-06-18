@@ -11,8 +11,12 @@ import rssFetch from './utils/fetch.js'
 import render from './view.js'
 
 const elements = {
+  body: document.querySelector('body'),
+  footer: document.querySelector('footer'),
+
   title: document.querySelector('h1'),
   titleDescription: document.querySelector('.lead'),
+
   form: {
     form: document.querySelector('.rss-form'),
     input: document.getElementById('url-input'),
@@ -21,15 +25,23 @@ const elements = {
     exampleRss: document.querySelector('.text-muted'),
     feedbackMessage: document.querySelector('.feedback'),
   },
+
   posts: document.querySelector('.posts'),
   feeds: document.querySelector('.feeds'),
+
+  modal: {
+    modalContainer: document.querySelector('#modal'),
+    title: document.querySelector('.modal-title'),
+    description: document.querySelector('.modal-body'),
+    readMore: document.querySelector('.modal-footer > .full-article'),
+    close: document.querySelector('.modal-footer > .btn-secondary'),
+  },
 }
 
 const isValid = (url, feeds) => {
   return validator(feeds).validate(url)
     .then(() => true)
     .catch((err) => {
-      // console.log(err.errors[0])
       return Promise.reject(err.errors[0])
     })
 }
@@ -45,6 +57,8 @@ export default () => {
     },
   })
     .then(() => {
+      elements.modal.readMore.textContent = i18nInstance.t('modal.readMore')
+      elements.modal.close.textContent = i18nInstance.t('modal.close')
       elements.title.textContent = i18nInstance.t('title')
       elements.titleDescription.textContent = i18nInstance.t('titleDescription')
       elements.form.label.textContent = i18nInstance.t('form.input')
@@ -68,9 +82,15 @@ export default () => {
       valid: true,
     },
     feeds: [], // { url: 'http...', title, description, id: 1 }
-    posts: [], // {  title, description, link, feedId}; { feedId, posts: [{ title, description, link }] }
+    posts: [], // {  title, description, link, feedId}
+    viewedPostsId: [],
+    modalOpenPostId: 0,
     uiState: {
       formFeedbackMessage: '', // text-danger, text-success
+      modal: {
+        // display: 'none', // block
+        hidden: '', // true, false
+      },
     },
   }
   const watchedState = render(state, elements, i18nInstance)
@@ -96,8 +116,7 @@ export default () => {
         state.uiState.formFeedbackMessage = 'success'
         watchedState.rssForm.status = 'success'
         watchedState.feeds = [newFeed, ...state.feeds]
-        watchedState.posts = ([...postsForFeed, ...state.posts])
-        // console.log(state.posts)
+        watchedState.posts = ([...state.posts, ...postsForFeed])
       })
       .then(() => {
         return setInterval(() => update(watchedState), 5000)
@@ -108,5 +127,17 @@ export default () => {
         state.uiState.formFeedbackMessage = 'danger'
         watchedState.rssForm.status = 'failed'
       })
+  })
+
+  elements.posts.addEventListener('click', (e) => {
+    const target = e.target
+    const id = target.dataset.id
+    watchedState.viewedPostsId = [...state.viewedPostsId, id]
+    if (e.target.matches('[data-bs-toggle="modal"]')) {
+      state.uiState.modal.display = 'block'
+      state.modalOpenPostId = id
+      console.log(state.modalOpenPostId)
+      watchedState.uiState.modal.hidden = false
+    }
   })
 }
