@@ -115,15 +115,14 @@ const renderPosts = (state, elements, i18n) => {
 
 const renderModal = (state, elements) => {
   const { title, description, link, id } = state.posts.find(post => post.id === state.modalOpenPostId)
-  console.log(id)
+  // console.log(id)
 
   elements.modal.title.textContent = title
   elements.modal.description.textContent = description
   elements.modal.readMore.href = link
 
   const modal = bootstrap.Modal.getOrCreateInstance(elements.modal.modalContainer)
-  console.log(modal)
-  // modal.show()
+  modal.show()
 }
 
 export default (state, elements, i18n) => onChange(state, (path) => {
@@ -140,7 +139,7 @@ export default (state, elements, i18n) => onChange(state, (path) => {
     case 'viewedPostsId':
       renderLinks(state)
       break
-    case 'uiState.modal.hidden':
+    case 'modalOpenPostId':
       renderModal(state, elements)
       break
     default:

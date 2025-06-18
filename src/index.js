@@ -83,9 +83,9 @@ export default () => {
     },
     feeds: [], // { url: 'http...', title, description, id: 1 }
     posts: [], // {  title, description, link, feedId}
-    viewedPostsId: [],
-    modalOpenPostId: 0,
-    uiState: {
+    viewedPostsId: [], // new Set
+    modalOpenPostId: null,
+    uiState: { // ?
       formFeedbackMessage: '', // text-danger, text-success
       modal: {
         // display: 'none', // block
@@ -118,9 +118,9 @@ export default () => {
         watchedState.feeds = [newFeed, ...state.feeds]
         watchedState.posts = ([...state.posts, ...postsForFeed])
       })
-      .then(() => {
-        return setInterval(() => update(watchedState), 5000)
-      })
+      // .then(() => {
+      //   return setTimeout(() => update(watchedState), 5000)
+      // })
       .catch((err) => {
         state.rssForm.valid = false
         state.rssForm.error = err
@@ -135,9 +135,10 @@ export default () => {
     watchedState.viewedPostsId = [...state.viewedPostsId, id]
     if (e.target.matches('[data-bs-toggle="modal"]')) {
       state.uiState.modal.display = 'block'
-      state.modalOpenPostId = id
       console.log(state.modalOpenPostId)
       watchedState.uiState.modal.hidden = false
+      watchedState.modalOpenPostId = id
     }
   })
+  update(watchedState)
 }
