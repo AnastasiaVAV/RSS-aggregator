@@ -1,5 +1,6 @@
 import rssFetch from './fetch'
 import parser from './parser'
+import _ from 'lodash'
 
 const update = (state) => {
   const { feeds, posts: statePosts } = state
@@ -12,7 +13,7 @@ const update = (state) => {
         const [, currentPosts] = parser(data.contents)
         const newPosts = currentPosts
           .filter(post => !stateLinks.includes(post.link))
-          .map(post => ({ ...post, feedUrl: url }))
+          .map(post => ({ ...post, id: _.uniqueId(), feedUrl: url }))
         if (newPosts.length !== 0) {
           state.posts = [...statePosts, ...newPosts]
         }

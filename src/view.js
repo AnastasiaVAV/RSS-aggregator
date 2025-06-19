@@ -1,5 +1,5 @@
 import onChange from 'on-change'
-import * as bootstrap from 'bootstrap'
+import 'bootstrap'
 
 const renderForm = (state, elements, i18n) => {
   const { rssForm } = state
@@ -16,7 +16,7 @@ const renderForm = (state, elements, i18n) => {
       elements.form.submit.disabled = false
       elements.form.feedbackMessage.classList.add('text-success')
       elements.form.feedbackMessage.textContent = i18n.t('form.feedbackMessage.success')
-      elements.form.form.reset()
+      elements.form.formEl.reset()
       elements.form.input.focus()
       break
     case 'failed':
@@ -77,8 +77,10 @@ const renderFeeds = (state, elements, i18n) => {
 const renderLinks = (state) => {
   state.viewedPostsIds.forEach((currentId) => {
     const currentPost = document.querySelector(`[data-id="${currentId}"]`)
-    currentPost.classList.remove('fw-bold')
-    currentPost.classList.add('fw-normal', 'link-secondary')
+    if (currentPost) {
+      currentPost.classList.remove('fw-bold')
+      currentPost.classList.add('fw-normal', 'link-secondary')
+    }
   })
 }
 
@@ -120,8 +122,6 @@ const renderModal = (state, elements) => {
   elements.modal.title.textContent = title
   elements.modal.description.textContent = description
   elements.modal.readMore.href = link
-
-  bootstrap.Modal.getOrCreateInstance(elements.modal.modalContainer)
 }
 
 export default (state, elements, i18n) => onChange(state, (path) => {

@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 export default (content) => {
   const data = new DOMParser().parseFromString(content, 'application/xml')
   if (data.querySelector('parsererror')) {
@@ -18,8 +16,7 @@ export default (content) => {
       const title = item.querySelector('title').textContent
       const description = item.querySelector('description').textContent
       const link = item.querySelector('link').textContent
-      const id = _.uniqueId()
-      return { title, description, link, id }
+      return { title, description, link }
     })
 
   return [feed, posts]

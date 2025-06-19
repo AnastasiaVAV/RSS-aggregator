@@ -1,5 +1,6 @@
 import { setLocale } from 'yup'
 import i18n from 'i18next'
+import _ from 'lodash'
 import ru from './locales/ru.js'
 import validator from './utils/validator.js'
 import parser from './utils/parser.js'
@@ -15,7 +16,7 @@ const elements = {
   titleDescription: document.querySelector('.lead'),
 
   form: {
-    form: document.querySelector('.rss-form'),
+    formEl: document.querySelector('.rss-form'),
     input: document.getElementById('url-input'),
     label: document.querySelector('label[for="url-input"]'),
     submit: document.querySelector('button[type="submit"]'),
@@ -87,28 +88,28 @@ export default () => {
 
   const watchedState = render(state, elements, i18nInstance)
 
-  elements.form.form.addEventListener('submit', (e) => {
+  elements.form.formEl.addEventListener('submit', (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const url = formData.get('url').trim()
     watchedState.rssForm.status = 'sending'
     isValid(url, state.feeds)
       .then(() => {
-        watchedState.rssForm.valid = true
-        watchedState.rssForm.error = null
         return rssFetch(url)
       })
       .then(({ data }) => {
         const [feed, posts] = parser(data.contents)
         const newFeed = { url, ...feed }
-        const newPosts = posts.map(post => ({ ...post, feedUrl: url }))
+        const newPosts = posts.map(post => ({ ...post, id: _.uniqueId(), feedUrl: url }))
+        watchedState.rssForm.valid = true
+        watchedState.rssForm.error = null
         watchedState.rssForm.status = 'success'
         watchedState.feeds = [...state.feeds, newFeed]
         watchedState.posts = [...state.posts, ...newPosts]
       })
       .catch((err) => {
         watchedState.rssForm.valid = false
-        state.rssForm.error = err
+        watchedState.rssForm.error = err
         watchedState.rssForm.status = 'failed'
       })
   })
