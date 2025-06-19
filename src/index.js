@@ -1,13 +1,10 @@
-// import * as yup from 'yup'
 import { setLocale } from 'yup'
 import i18n from 'i18next'
-// import axios from 'axios'
 import ru from './locales/ru.js'
 import validator from './utils/validator.js'
 import parser from './utils/parser.js'
 import update from './utils/update.js'
 import rssFetch from './utils/fetch.js'
-
 import render from './view.js'
 
 const elements = {
@@ -74,6 +71,7 @@ export default () => {
       url: 'form.feedbackMessage.errors.notValidUrl',
     },
   })
+
   const state = {
     language: defaultLanguage,
     rssForm: {
@@ -83,48 +81,34 @@ export default () => {
     },
     feeds: [], // { url: 'http...', title, description, id: 1 }
     posts: [], // {  title, description, link, feedId}
-    viewedPostsId: [], // new Set
+    viewedPostsIds: new Set(),
     modalOpenPostId: null,
-    uiState: { // ?
-      formFeedbackMessage: '', // text-danger, text-success
-      modal: {
-        // display: 'none', // block
-        hidden: '', // true, false
-      },
-    },
   }
+
   const watchedState = render(state, elements, i18nInstance)
 
   elements.form.form.addEventListener('submit', (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const url = formData.get('url').trim()
-    const lastIdCount = state.feeds[state.feeds.length - 1]?.id || 0
-    const currentIdCount = lastIdCount + 1
-    state.rssForm.status = 'sending'
+    watchedState.rssForm.status = 'sending'
     isValid(url, state.feeds)
       .then(() => {
-        state.rssForm.valid = true
-        state.rssForm.error = null
+        watchedState.rssForm.valid = true
+        watchedState.rssForm.error = null
         return rssFetch(url)
       })
       .then(({ data }) => {
         const [feed, posts] = parser(data.contents)
-        const newFeed = { url, ...feed, id: currentIdCount }
-        // const postsForFeed = { feedId: currentIdCount, posts: postsArr }
-        const postsForFeed = posts.map(post => ({ ...post, feedId: currentIdCount }))
-        state.uiState.formFeedbackMessage = 'success'
+        const newFeed = { url, ...feed }
+        const newPosts = posts.map(post => ({ ...post, feedUrl: url }))
         watchedState.rssForm.status = 'success'
-        watchedState.feeds = [newFeed, ...state.feeds]
-        watchedState.posts = ([...state.posts, ...postsForFeed])
+        watchedState.feeds = [...state.feeds, newFeed]
+        watchedState.posts = [...state.posts, ...newPosts]
       })
-      // .then(() => {
-      //   return setTimeout(() => update(watchedState), 5000)
-      // })
       .catch((err) => {
-        state.rssForm.valid = false
+        watchedState.rssForm.valid = false
         state.rssForm.error = err
-        state.uiState.formFeedbackMessage = 'danger'
         watchedState.rssForm.status = 'failed'
       })
   })
@@ -132,11 +116,8 @@ export default () => {
   elements.posts.addEventListener('click', (e) => {
     const target = e.target
     const id = target.dataset.id
-    watchedState.viewedPostsId = [...state.viewedPostsId, id]
+    watchedState.viewedPostsIds = new Set([...state.viewedPostsIds, id])
     if (e.target.matches('[data-bs-toggle="modal"]')) {
-      state.uiState.modal.display = 'block'
-      console.log(state.modalOpenPostId)
-      watchedState.uiState.modal.hidden = false
       watchedState.modalOpenPostId = id
     }
   })

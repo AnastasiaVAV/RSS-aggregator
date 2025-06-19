@@ -2,26 +2,26 @@ import onChange from 'on-change'
 import * as bootstrap from 'bootstrap'
 
 const renderForm = (state, elements, i18n) => {
-  const { rssForm, uiState } = state
+  const { rssForm } = state
   elements.form.feedbackMessage.classList.remove('text-danger', 'text-success')
   switch (rssForm.status) {
     case 'filling':
       elements.form.submit.disabled = false
       break
     case 'sending':
-      elements.form.submit.disabled = rssForm.valid
+      elements.form.submit.disabled = true
       elements.form.feedbackMessage.textContent = ''
       break
     case 'success':
       elements.form.submit.disabled = false
-      elements.form.feedbackMessage.classList.add(`text-${uiState.formFeedbackMessage}`)
+      elements.form.feedbackMessage.classList.add('text-success')
       elements.form.feedbackMessage.textContent = i18n.t('form.feedbackMessage.success')
       elements.form.form.reset()
       elements.form.input.focus()
       break
     case 'failed':
       elements.form.submit.disabled = false
-      elements.form.feedbackMessage.classList.add(`text-${uiState.formFeedbackMessage}`)
+      elements.form.feedbackMessage.classList.add('text-danger')
       elements.form.feedbackMessage.textContent = i18n.t(state.rssForm.error)
       elements.form.input.focus()
       break
@@ -34,10 +34,10 @@ const renderSection = (sectionType, i18n) => {
   const container = document.createElement('div')
   container.classList.add('card', 'border-0')
 
-  const sectionNameContainer = document.createElement('div') // контейнер названия секции
+  const sectionNameContainer = document.createElement('div')
   sectionNameContainer.classList.add('card-body')
 
-  const sectionName = document.createElement('h2') // название секции
+  const sectionName = document.createElement('h2')
   sectionName.classList.add('card-title', 'h4')
   sectionName.textContent = i18n.t(`${sectionType}.sectionTitle`)
 
@@ -66,17 +66,18 @@ const renderFeeds = (state, elements, i18n) => {
     const feedDescription = document.createElement('p')
     feedDescription.classList.add('m-0', 'small', 'text-black-50')
     feedDescription.textContent = description
+
     item.append(feedTitle, feedDescription)
-    list.append(item)
+    list.prepend(item)
   })
   container.append(list)
   elements.feeds.append(container)
 }
 
 const renderLinks = (state) => {
-  state.viewedPostsId.forEach((currentId) => {
+  state.viewedPostsIds.forEach((currentId) => {
     const currentPost = document.querySelector(`[data-id="${currentId}"]`)
-    currentPost.classList.remove('fw-bold', 'fw-normal')
+    currentPost.classList.remove('fw-bold')
     currentPost.classList.add('fw-normal', 'link-secondary')
   })
 }
@@ -91,7 +92,8 @@ const renderPosts = (state, elements, i18n) => {
     item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
     const linkEl = document.createElement('a')
-    linkEl.classList.add('fw-bold')
+    const linkElClass = state.viewedPostsIds.has(id) ? 'fw-normal link-secondary' : 'fw-bold'
+    linkEl.setAttribute('class', linkElClass)
     linkEl.href = link
     linkEl.target = '_blank'
     linkEl.rel = 'noopener noreferrer'
@@ -110,19 +112,16 @@ const renderPosts = (state, elements, i18n) => {
   })
   container.append(list)
   elements.posts.append(container)
-  renderLinks(state)
 }
 
 const renderModal = (state, elements) => {
-  const { title, description, link, id } = state.posts.find(post => post.id === state.modalOpenPostId)
-  // console.log(id)
+  const { title, description, link } = state.posts.find(post => post.id === state.modalOpenPostId)
 
   elements.modal.title.textContent = title
   elements.modal.description.textContent = description
   elements.modal.readMore.href = link
 
-  const modal = bootstrap.Modal.getOrCreateInstance(elements.modal.modalContainer)
-  modal.show()
+  bootstrap.Modal.getOrCreateInstance(elements.modal.modalContainer)
 }
 
 export default (state, elements, i18n) => onChange(state, (path) => {
@@ -136,7 +135,7 @@ export default (state, elements, i18n) => onChange(state, (path) => {
     case 'posts':
       renderPosts(state, elements, i18n)
       break
-    case 'viewedPostsId':
+    case 'viewedPostsIds':
       renderLinks(state)
       break
     case 'modalOpenPostId':
