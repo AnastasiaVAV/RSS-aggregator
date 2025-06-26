@@ -1,12 +1,12 @@
 import { setLocale } from 'yup'
 import i18n from 'i18next'
 import _ from 'lodash'
-import ru from './locales/ru.js'
+import resources from './locales/index.js'
 import validator from './utils/validator.js'
 import parser from './utils/parser.js'
 import update from './utils/update.js'
 import rssFetch from './utils/fetch.js'
-import render from './view.js'
+import onChange, { renderText } from './view.js'
 
 const elements = {
   body: document.querySelector('body'),
@@ -40,29 +40,19 @@ const isValid = (url, feeds) => {
   return validator(feeds).validate(url)
     .then(() => true)
     .catch((err) => {
-      return Promise.reject(err.errors[0])
+      throw err.errors
     })
 }
 
 export default () => {
   const defaultLanguage = 'ru'
+
   const i18nInstance = i18n.createInstance()
   i18nInstance.init({
     lng: defaultLanguage,
     debug: false,
-    resources: {
-      ru,
-    },
+    resources,
   })
-    .then(() => {
-      elements.modal.readMore.textContent = i18nInstance.t('modal.readMore')
-      elements.modal.close.textContent = i18nInstance.t('modal.close')
-      elements.title.textContent = i18nInstance.t('title')
-      elements.titleDescription.textContent = i18nInstance.t('titleDescription')
-      elements.form.label.textContent = i18nInstance.t('form.input')
-      elements.form.submit.textContent = i18nInstance.t('form.submitButton')
-      elements.form.exampleRss.textContent = i18nInstance.t('form.exampleRss')
-    })
 
   setLocale({
     mixed: {
@@ -75,8 +65,8 @@ export default () => {
 
   const state = {
     language: defaultLanguage,
+    processStatus: 'filling', // 'sending', 'success', 'failed'
     rssForm: {
-      status: 'filling', // 'sending', 'success', 'failed'
       error: null,
       valid: true,
     },
@@ -86,13 +76,14 @@ export default () => {
     modalOpenPostId: null,
   }
 
-  const watchedState = render(state, elements, i18nInstance)
+  renderText(state, elements, i18nInstance)
+  const watchedState = onChange(state, elements, i18nInstance)
 
   elements.form.formEl.addEventListener('submit', (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const url = formData.get('url').trim()
-    watchedState.rssForm.status = 'sending'
+    watchedState.processStatus = 'sending'
     isValid(url, state.feeds)
       .then(() => {
         return rssFetch(url)
@@ -103,14 +94,14 @@ export default () => {
         const newPosts = posts.map(post => ({ ...post, id: _.uniqueId(), feedUrl: url }))
         watchedState.rssForm.valid = true
         watchedState.rssForm.error = null
-        watchedState.rssForm.status = 'success'
+        watchedState.processStatus = 'success'
         watchedState.feeds = [...state.feeds, newFeed]
         watchedState.posts = [...state.posts, ...newPosts]
       })
       .catch((err) => {
         watchedState.rssForm.valid = false
         watchedState.rssForm.error = err
-        watchedState.rssForm.status = 'failed'
+        watchedState.processStatus = 'failed'
       })
   })
 

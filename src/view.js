@@ -1,10 +1,20 @@
 import onChange from 'on-change'
 import 'bootstrap'
 
+export const renderText = (state, elements, i18n) => {
+  elements.modal.readMore.textContent = i18n.t('modal.readMore')
+  elements.modal.close.textContent = i18n.t('modal.close')
+  elements.title.textContent = i18n.t('title')
+  elements.titleDescription.textContent = i18n.t('titleDescription')
+  elements.form.label.textContent = i18n.t('form.input')
+  elements.form.submit.textContent = i18n.t('form.submitButton')
+  elements.form.exampleRss.textContent = i18n.t('form.exampleRss')
+}
+
 const renderForm = (state, elements, i18n) => {
-  const { rssForm } = state
+  const { processStatus } = state
   elements.form.feedbackMessage.classList.remove('text-danger', 'text-success')
-  switch (rssForm.status) {
+  switch (processStatus) {
     case 'filling':
       elements.form.submit.disabled = false
       break
@@ -126,7 +136,7 @@ const renderModal = (state, elements) => {
 
 export default (state, elements, i18n) => onChange(state, (path) => {
   switch (path) {
-    case 'rssForm.status':
+    case 'processStatus':
       renderForm(state, elements, i18n)
       break
     case 'feeds':
