@@ -15,7 +15,7 @@ const renderForm = (state, elements, i18n) => {
   const { processStatus } = state
   elements.form.feedbackMessage.classList.remove('text-danger', 'text-success')
   switch (processStatus) {
-    case 'filling':
+    case 'idle':
       elements.form.submit.disabled = false
       break
     case 'sending':
@@ -85,7 +85,7 @@ const renderFeeds = (state, elements, i18n) => {
 }
 
 const renderLinks = (state) => {
-  state.viewedPostsIds.forEach((currentId) => {
+  state.uiState.viewedPostsIds.forEach((currentId) => {
     const currentPost = document.querySelector(`[data-id="${currentId}"]`)
     if (currentPost) {
       currentPost.classList.remove('fw-bold')
@@ -104,7 +104,7 @@ const renderPosts = (state, elements, i18n) => {
     item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
     const linkEl = document.createElement('a')
-    const linkElClass = state.viewedPostsIds.has(id) ? 'fw-normal link-secondary' : 'fw-bold'
+    const linkElClass = state.uiState.viewedPostsIds.has(id) ? 'fw-normal link-secondary' : 'fw-bold'
     linkEl.setAttribute('class', linkElClass)
     linkEl.href = link
     linkEl.target = '_blank'
@@ -145,7 +145,7 @@ export default (state, elements, i18n) => onChange(state, (path) => {
     case 'posts':
       renderPosts(state, elements, i18n)
       break
-    case 'viewedPostsIds':
+    case 'uiState.viewedPostsIds':
       renderLinks(state)
       break
     case 'modalOpenPostId':

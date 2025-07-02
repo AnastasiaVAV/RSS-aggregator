@@ -1,7 +1,7 @@
 export default (content) => {
   const data = new DOMParser().parseFromString(content, 'application/xml')
   if (data.querySelector('parsererror')) {
-    throw 'form.feedbackMessage.errors.notValidRss'
+    throw new Error('form.feedbackMessage.errors.notValidRss')
   }
 
   const feed = {

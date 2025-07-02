@@ -9,10 +9,12 @@ const update = (state) => {
     return rssFetch(url)
       .then(({ data }) => {
         const statePostsForFeed = statePosts.filter(({ feedUrl }) => feedUrl === url)
-        const stateLinks = statePostsForFeed.map(post => post.link)
+        // const stateLinks = statePostsForFeed.map(post => post.link)
         const [, currentPosts] = parser(data.contents)
-        const newPosts = currentPosts
-          .filter(post => !stateLinks.includes(post.link))
+        // const newPosts = currentPosts
+        //   .filter(post => !stateLinks.includes(post.link))
+        //   .map(post => ({ ...post, id: _.uniqueId(), feedUrl: url }))
+        const newPosts = _.differenceWith(currentPosts, statePostsForFeed, (currentPost, statePost) => currentPost.link === statePost.link)
           .map(post => ({ ...post, id: _.uniqueId(), feedUrl: url }))
         if (newPosts.length !== 0) {
           state.posts = [...statePosts, ...newPosts]

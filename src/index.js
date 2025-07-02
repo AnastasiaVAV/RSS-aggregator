@@ -40,7 +40,7 @@ const isValid = (url, feeds) => {
   return validator(feeds).validate(url)
     .then(() => true)
     .catch((err) => {
-      throw err.errors
+      throw err
     })
 }
 
@@ -65,15 +65,17 @@ export default () => {
 
   const state = {
     language: defaultLanguage,
-    processStatus: 'filling', // 'sending', 'success', 'failed'
+    processStatus: 'idle', // 'sending', 'success', 'failed'
     rssForm: {
       error: null,
       valid: true,
     },
     feeds: [], // { url: 'http...', title, description, id: 1 }
     posts: [], // {  title, description, link, feedId}
-    viewedPostsIds: new Set(),
     modalOpenPostId: null,
+    uiState: {
+      viewedPostsIds: new Set(),
+    },
   }
 
   renderText(state, elements, i18nInstance)
@@ -100,7 +102,7 @@ export default () => {
       })
       .catch((err) => {
         watchedState.rssForm.valid = false
-        watchedState.rssForm.error = err
+        watchedState.rssForm.error = err.message
         watchedState.processStatus = 'failed'
       })
   })
@@ -108,7 +110,7 @@ export default () => {
   elements.posts.addEventListener('click', (e) => {
     const target = e.target
     const id = target.dataset.id
-    watchedState.viewedPostsIds = new Set([...state.viewedPostsIds, id])
+    watchedState.uiState.viewedPostsIds = new Set([...state.uiState.viewedPostsIds, id])
     if (e.target.matches('[data-bs-toggle="modal"]')) {
       watchedState.modalOpenPostId = id
     }
