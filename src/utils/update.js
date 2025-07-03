@@ -2,6 +2,8 @@ import rssFetch from './fetch'
 import parser from './parser'
 import _ from 'lodash'
 
+const timeout = 5000
+
 const update = (state) => {
   const { feeds, posts: statePosts } = state
 
@@ -9,11 +11,7 @@ const update = (state) => {
     return rssFetch(url)
       .then(({ data }) => {
         const statePostsForFeed = statePosts.filter(({ feedUrl }) => feedUrl === url)
-        // const stateLinks = statePostsForFeed.map(post => post.link)
         const [, currentPosts] = parser(data.contents)
-        // const newPosts = currentPosts
-        //   .filter(post => !stateLinks.includes(post.link))
-        //   .map(post => ({ ...post, id: _.uniqueId(), feedUrl: url }))
         const newPosts = _.differenceWith(currentPosts, statePostsForFeed, (currentPost, statePost) => currentPost.link === statePost.link)
           .map(post => ({ ...post, id: _.uniqueId(), feedUrl: url }))
         if (newPosts.length !== 0) {
@@ -25,7 +23,7 @@ const update = (state) => {
 
   Promise.all(promises)
     .finally(() => {
-      setTimeout(() => update(state), 5000)
+      setTimeout(() => update(state), timeout)
     })
 }
 
