@@ -1,4 +1,4 @@
-# Rss Reader 
+# Rss aggregator
 [![Actions Status](https://github.com/AnastasiaVAV/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AnastasiaVAV/frontend-project-11/actions)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=AnastasiaVAV_frontend-project-11&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)
 
