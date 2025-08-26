@@ -1,18 +1,18 @@
-### Hexlet tests and linter status:
+# Rss Reader 
 [![Actions Status](https://github.com/AnastasiaVAV/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AnastasiaVAV/frontend-project-11/actions)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=AnastasiaVAV_frontend-project-11&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)
 
-## Rss Reader — сервис для агрегации RSS-лент. Позволяет добавлять неограниченное количество источников, автоматически обновлять ленту и читать новости без перехода на внешние сайты.
+Сервис для агрегации RSS-лент. Позволяет добавлять неограниченное количество источников, автоматически обновлять ленту и читать новости без перехода на внешние сайты
 
 Cсылка на проект – https://frontend-project-11-eosin-sigma.vercel.app/
 
 ## Особенности проекта
-- Добавление RSS-лент по URL (валидация с помощью Yup)
+- Добавление RSS-лент по URL (с валидацией)
 - Автоматическое обновление ленты (каждые 5 секунд)
 - Просмотр контента без перехода на внешние сайты
-- Локализация (i18next)
+- Локализация
 - Обработка сетевых ошибок
-- Адаптивный интерфейс (Bootstrap 5)
+- Адаптивный интерфейс
 
 ## Технологии
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
@@ -29,26 +29,16 @@ Cсылка на проект – https://frontend-project-11-eosin-sigma.vercel
 - `on-change` – отслеживание изменений состояния
 - `yup` – валидация данных
 
-<!-- [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AnastasiaVAV_frontend-project-11)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11) -->
-<!-- [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=AnastasiaVAV_frontend-project-11&metric=bugs)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=AnastasiaVAV_frontend-project-11&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=AnastasiaVAV_frontend-project-11) -->
-
-## Демонстрация работы
-![Демонстрация работы RSS-aggregator](./src/assets/RSS_aggregator.gif)
-
 ## Установка и запуск
-
-1.  Клонируйте репозиторий:
-    ```bash
-    git clone https://github.com/AnastasiaVAV/RSS-aggregator.git
-    cd frontend-project-11
-    ```
-2.  Установите зависимости:
+1.  Установите зависимости:
     ```bash
     npm install
     ```
-3.  Запустите приложение в режиме разработки:
+2.  Запустите приложение в режиме разработки:
     ```bash
     npm run dev
     ```
-4.  Откройте [http://localhost:5173](http://localhost:5173) в браузере.
+3.  Откройте [http://localhost:5173](http://localhost:5173) в браузере.
+
+## Демонстрация работы
+![Демонстрация работы RSS-aggregator](./src/assets/RSS_aggregator.gif)
